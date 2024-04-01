@@ -1,0 +1,63 @@
+<body>
+    <canvas id="render-canvas"></canvas>
+    <style>
+        body, #render-canvas {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        } 
+    </style>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script>
+        // Создаем сцену
+        let canvas = window.document.querySelector('#render-canvas')
+        let engine = new BABYLON.Engine(canvas)
+        var scene = new BABYLON.Scene(engine);
+
+        // Создаем камеру
+        var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0, 0, 0), scene);
+        camera.attachControl(canvas, true);
+
+        // Создаем свет
+        var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+
+        // Создаем куб
+        var box = BABYLON.Mesh.CreateBox("box", 1.0, scene);
+        box.rotation.x = -0.2;
+        box.rotation.y = -0.4;
+        // Материал куба
+        var boxMaterial = new BABYLON.StandardMaterial("boxMaterial", scene);
+        boxMaterial.diffuseColor = new BABYLON.Color3(0, 0.58, 0.86); // Цвет куба - красный
+        box.material = boxMaterial;
+
+        // Запускаем цикл рендеринга
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+        
+        // Обработчики событий
+        
+        function delay(time) {
+            return new Promise(resolve => setTimeout(resolve, time));
+        }
+
+        async function superSize(){
+            
+            for (i = 1; i < 5000; i+=0.1)
+            {
+                let del = Math.sin(i) * 2
+                box.scaling.x += 0.0001
+                box.scaling.y += 0.0001
+                box.scaling.z += 0.0001
+                box.rotation.x += 1.005 / (i / del + 1)
+                box.rotation.y += 20.5 / (i / del + 1)
+                box.rotation.z += 1.001 / (i / del + 1)
+                await delay(2)
+            }
+        }
+
+        window.addEventListener('touchend', () => {
+            superSize()
+        })
+    </script>
+</body>
